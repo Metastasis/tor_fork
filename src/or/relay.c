@@ -251,7 +251,7 @@ circuit_receive_relay_cell(cell_t *cell, circuit_t *circ,
     if (cell_direction == CELL_DIRECTION_OUT) {
       ++stats_n_relay_cells_delivered;
       log_debug(LD_OR,"Sending away from origin.");
-      log_debug(LD_OR,"Payload: %s", cell.payload);
+      log_debug(LD_OR,"Payload: %s", cell->payload);
       if ((reason=connection_edge_process_relay_cell(cell, circ, conn, NULL))
           < 0) {
         log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
