@@ -374,6 +374,7 @@ circuit_package_relay_cell(cell_t *cell, circuit_t *circ,
       return 0; /* just drop it */
     }
 
+    log_debug(LD_OR, 'outbound payload: %s', cell->payload);
     relay_encrypt_cell_outbound(cell, TO_ORIGIN_CIRCUIT(circ), layer_hint);
   } else { /* incoming cell */
     if (CIRCUIT_IS_ORIGIN(circ)) {
@@ -384,6 +385,7 @@ circuit_package_relay_cell(cell_t *cell, circuit_t *circ,
       return 0; /* just drop it */
     }
     or_circuit_t *or_circ = TO_OR_CIRCUIT(circ);
+    log_debug(LD_OR, 'inbound payload: %s', cell->payload);
     relay_encrypt_cell_inbound(cell, or_circ);
     chan = or_circ->p_chan;
   }
@@ -553,7 +555,7 @@ relay_send_command_from_edge_,(streamid_t stream_id, circuit_t *circ,
   if (payload_len)
     memcpy(cell.payload+RELAY_HEADER_SIZE, payload, payload_len);
 
-  log_debug(LD_OR,"payload: %s", payload);
+  log_debug(LD_OR,"payload: %s", cell.payload);
   log_debug(LD_OR,"delivering %d cell %s.", relay_command,
             cell_direction == CELL_DIRECTION_OUT ? "forward" : "backward");
 
