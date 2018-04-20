@@ -251,7 +251,6 @@ circuit_receive_relay_cell(cell_t *cell, circuit_t *circ,
     if (cell_direction == CELL_DIRECTION_OUT) {
       ++stats_n_relay_cells_delivered;
       log_debug(LD_OR,"Sending away from origin.");
-      log_debug(LD_OR,"from origin payload: %s", cell->payload);
       if ((reason=connection_edge_process_relay_cell(cell, circ, conn, NULL))
           < 0) {
         log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
@@ -374,7 +373,6 @@ circuit_package_relay_cell(cell_t *cell, circuit_t *circ,
       return 0; /* just drop it */
     }
 
-    log_debug(LD_OR, 'outbound payload: %s', cell->payload);
     relay_encrypt_cell_outbound(cell, TO_ORIGIN_CIRCUIT(circ), layer_hint);
   } else { /* incoming cell */
     if (CIRCUIT_IS_ORIGIN(circ)) {
@@ -385,7 +383,6 @@ circuit_package_relay_cell(cell_t *cell, circuit_t *circ,
       return 0; /* just drop it */
     }
     or_circuit_t *or_circ = TO_OR_CIRCUIT(circ);
-    log_debug(LD_OR, 'inbound payload: %s', cell->payload);
     relay_encrypt_cell_inbound(cell, or_circ);
     chan = or_circ->p_chan;
   }
@@ -555,7 +552,6 @@ relay_send_command_from_edge_,(streamid_t stream_id, circuit_t *circ,
   if (payload_len)
     memcpy(cell.payload+RELAY_HEADER_SIZE, payload, payload_len);
 
-  log_debug(LD_OR,"payload: %s%s", cell.payload, payload);
   log_debug(LD_OR,"delivering %d cell %s.", relay_command,
             cell_direction == CELL_DIRECTION_OUT ? "forward" : "backward");
 
@@ -1411,7 +1407,7 @@ connection_edge_process_relay_cell(cell_t *cell, circuit_t *circ,
   tor_assert(circ);
 
   relay_header_unpack(&rh, cell->payload);
-//  log_fn(LOG_DEBUG,"command %d stream %d", rh.command, rh.stream_id);
+  log_fn(LOG_DEBUG,"command %d stream %d", rh.command, rh.stream_id);
   num_seen++;
   log_debug(domain, "Now seen %d relay cells here (command %d, stream %d).",
             num_seen, rh.command, rh.stream_id);
@@ -1534,8 +1530,6 @@ connection_edge_process_relay_cell(cell_t *cell, circuit_t *circ,
       stats_n_data_bytes_received += rh.length;
       connection_buf_add((char*)(cell->payload + RELAY_HEADER_SIZE),
                               rh.length, TO_CONN(conn));
-      log_debug(LD_OR,"data payload: %s",
-               (char*)(cell->payload));
 
 #ifdef MEASUREMENTS_21206
       /* Count number of RELAY_DATA cells received on a linked directory

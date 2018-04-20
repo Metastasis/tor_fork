@@ -11,6 +11,7 @@
 
 #ifndef TOR_RELAY_CRYPTO_H
 #define TOR_RELAY_CRYPTO_H
+#include "torlog.h"
 
 int relay_crypto_init(relay_crypto_t *crypto,
                       const char *key_data, size_t key_data_len,
