@@ -80,7 +80,7 @@ relay_digest_matches(crypto_digest_t *digest, cell_t *cell)
 static void
 relay_crypt_one_payload(crypto_cipher_t *cipher, uint8_t *in)
 {
-  log_debug(LD_OR, 'crypt payload: %s', (char*) in);
+  log_debug(LD_OR, "crypt payload: %s", (char*) in);
   crypto_cipher_crypt_inplace(cipher, (char*) in, CELL_PAYLOAD_SIZE);
 }
 
